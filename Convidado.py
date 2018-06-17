@@ -1,8 +1,12 @@
 from hashlib import sha512
 from email.utils import parseaddr
 import datetime as dt
+import sqlite3
 
 class Convidado:
+	conn = sqlite3.connect("test.db")
+	cur = conn.cursor()
+
 	def __init__(self, email, local):
 		try:
 			self.Email = self.validaEmail(email)
@@ -19,3 +23,10 @@ class Convidado:
 			raise ValueError('E-mail inválido')
 
 		return testEmail
+	
+	def buscaLocal(self, local):
+		local = local.strip('\'\"\\;.')
+		queryLocal = "SELECT * FROM cities WHERE name LIKE %{}%;".format(local)
+		result = self.cur.execute(queryLocal)
+	
+		return result
